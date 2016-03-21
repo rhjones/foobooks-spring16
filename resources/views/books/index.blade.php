@@ -1,9 +1,9 @@
 @extends('layouts.master')
 
 @section('title')
-    Welcome to Foobooks
+    All books
 @stop
 
 @section('content')
-    Welcome to Foobooks.
+    All books will show here
 @stop
