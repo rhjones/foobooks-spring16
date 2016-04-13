@@ -17,6 +17,13 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+# ------------------------------------
+# Practice routes
+# ------------------------------------
+for($i = 0; $i <= 100; $i++) {
+    Route::get("/practice/ex".$i, "PracticeController@getEx".$i);
+}
+
 Route::get('/books', 'BookController@getIndex');
 Route::get('/book/create', 'BookController@getCreate');
 Route::post('/book/create', 'BookController@postCreate');
