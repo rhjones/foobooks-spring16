@@ -47,7 +47,9 @@ class BookController extends Controller {
             'title' => 'required|min:3',
             'author' => 'required'
         ]);
-        return 'Add the book: '.$request->input('title');
+
+        $title = $request->input('title');
+        return view('books.added', ['title' => $title]);
         // return redirect('/books');
     }
 
