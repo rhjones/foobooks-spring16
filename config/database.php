@@ -63,7 +63,6 @@ return [
             'prefix'    => '',
             'strict'    => false,
             'engine'    => null,
-            'unix_socket' => '/tmp/mysql/mysql.sock',
         ],
 
         'pgsql' => [
