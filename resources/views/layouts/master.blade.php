@@ -22,6 +22,10 @@
 </head>
 <body>
 
+    @if(Session::get('message') != null)
+        <div class='flash_message'>{{ Session::get('message') }}</div>
+    @endif
+
     <header>
         <a href='/'>
         <img
@@ -45,8 +49,8 @@
 
     <footer>
         &copy; {{ date('Y') }} &nbsp;&nbsp;
-        <a href='https://github.com/susanBuck/foobooks' class='fa fa-github' target='_blank'> View on Github</a> &nbsp;&nbsp;
-        <a href='http://foobooks.dwa15-practice.biz/' class='fa fa-link' target='_blank'> View Live</a>
+        <a href='https://github.com/rebekahheacock/foobooks16' class='fa fa-github' target='_blank'> View on Github</a> &nbsp;&nbsp;
+        <a href='http://foobooks.rhj.website/' class='fa fa-link' target='_blank'> View Live</a>
     </footer>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>

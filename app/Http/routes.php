@@ -13,9 +13,13 @@
 
 
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'BookController@getIndex');
+Route::get('/books', 'BookController@getIndex');
+Route::get('/book/create', 'BookController@getCreate');
+Route::post('/book/create', 'BookController@postCreate');
+Route::get('/book/edit/{id?}', 'BookController@getEdit');
+Route::post('/book/edit', 'BookController@postEdit');
+Route::get('/book/show/{title?}', 'BookController@getShow');
 
 # ------------------------------------
 # Practice routes
@@ -23,11 +27,6 @@ Route::get('/', function () {
 for($i = 0; $i <= 100; $i++) {
     Route::get("/practice/ex".$i, "PracticeController@getEx".$i);
 }
-
-Route::get('/books', 'BookController@getIndex');
-Route::get('/book/create', 'BookController@getCreate');
-Route::post('/book/create', 'BookController@postCreate');
-Route::get('/book/show/{title?}', 'BookController@getShow');
 
 Route::get('/debug', function() {
 
@@ -67,9 +66,12 @@ Route::get('/debug', function() {
 // Restrict certain routes to only be viewable in the local environments
 if(App::environment('local')) {
     Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
-}
 
-Route::get('/practice/ex0', 'PracticeController@getEx0');
-Route::get('/practice/ex1', 'PracticeController@getEx1');
+    Route::get('/drop', function() {
+        DB::statement('DROP database foobooks');
+        DB::statement('CREATE database foobooks');
+        return 'Dropped foobooks; created foobooks.';
+    });
+}
 
 
