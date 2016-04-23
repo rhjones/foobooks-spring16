@@ -51,7 +51,9 @@ class BookController extends Controller {
 
         // Mass Assignment
         $data = $request->only('title','author','published','cover','purchase_link');
-        \App\Book::create($data);
+        // \App\Book::create($data);
+        $book = new \App\Book($data);
+        $book->save();
 
         // Flash message
         \Session::flash('message','Your book was added');

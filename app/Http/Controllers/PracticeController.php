@@ -18,6 +18,59 @@ class PracticeController extends Controller {
             echo 'id:'.$book->id.' title: '.$book->title.'<br>';
         }
     }
+
+    /**
+    * Demonstrate association in a one to many relationship
+    */
+    public function getEx19() {
+        # Create an author we can associate a book with...
+        $author = new \App\Author;
+        $author->first_name = 'J.K';
+        $author->last_name = 'Rowling';
+        $author->bio_url = 'https://en.wikipedia.org/wiki/J._K._Rowling';
+        $author->birth_year = '1965';
+        $author->save();
+        dump($author->toArray());
+        # Create a new book
+        $book = new \App\Book;
+        $book->title = "Harry Potter and the Philosopher's Stone";
+        $book->published = 1997;
+        $book->cover = 'http://prodimage.images-bn.com/pimages/9781582348254_p0_v1_s118x184.jpg';
+        $book->purchase_link = 'http://www.barnesandnoble.com/w/harrius-potter-et-philosophi-lapis-j-k-rowling/1102662272?ean=9781582348254';
+        $book->author()->associate($author); # <--- Associate the author with this book
+        #$book->author_id = $author->id; # <--- Associate the author with this book
+        $book->save();
+        dump($book->toArray());
+    }
+
+    /**
+    * Demonstrate importance of eager loading when querying for multiple items
+    */
+    public function getEx18() {
+        # Eager loading
+        $books = \App\Book::with('author')->get();
+        foreach($books as $book) {
+            echo $book->author->first_name.'<br>';
+        }
+    }
+    /**
+    * Demonstrate dynamic properties
+    */
+    public function getEx17() {
+        $books = \App\Book::get();
+        # Because "author" was not eagerly loaded, it will be dynamically fetched
+        # for each iteration in this loop.
+        foreach($books as $book) {
+            echo $book->author->first_name.'<br>';
+        }
+    }
+    /**
+    * Collections
+    */
+    public function getEx16() {
+        $books = Book::all();
+        dump($books);
+    }
     /**
     * Demonstrate using the Book model without prefixing with \App\Book
     * This works because of the use `App\Book;` statement at the top of this file
