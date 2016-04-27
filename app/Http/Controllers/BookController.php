@@ -11,7 +11,7 @@ class BookController extends Controller {
     * Responds to requests to GET /books
     */
     public function getIndex() {
-        $books = \App\Book::orderBy('id','desc')->get();
+        $books = \App\Book::with('author')->orderBy('id','desc')->get();
         return view('books.index')->with('books',$books);
     }
 
@@ -34,7 +34,8 @@ class BookController extends Controller {
      * Responds to requests to GET /book/create
      */
     public function getCreate() {
-        return view('books.create');
+        $authors_for_dropdown = \App\Author::authorsForDropdown();
+        return view('books.create')->with('authors_for_dropdown', $authors_for_dropdown);
     }
 
     /**
@@ -43,16 +44,49 @@ class BookController extends Controller {
     public function postCreate(Request $request) {
         $this->validate($request,[
             'title' => 'required|min:3',
-            'author' => 'required',
+            'author_id' => 'required',
             'published' => 'required|min:4',
             'cover' => 'required|url',
             'purchase_link' => 'required|url',
+            'author_first' => 'required_if:author_id,other',
+            'author_last' => 'required_if:author_id,other',
+            'author_year' => 'required_if:author_id,other|digits:4',
+            'author_bio' => 'required_if:author_id,other|active_url',
         ]);
 
+
         // Mass Assignment
-        $data = $request->only('title','author','published','cover','purchase_link');
-        // \App\Book::create($data);
-        $book = new \App\Book($data);
+        // $book = \App\Book::create([
+        //     'title' => $request->title,
+        //     'published' => $request->published,
+        //     'cover' => $request->cover,
+        //     'purchase_link' => $request->purchase_link,
+        //     ]);
+
+        $book = new \App\Book;
+        $book->title = $request->title;
+        $book->published = $request->published;
+        $book->cover = $request->cover;
+        $book->purchase_link = $request->purchase_link;
+
+        if($request->author_id == 'other') {
+
+            $author = new \App\Author;
+            $author->first_name = $request->author_first;
+            $author->last_name = $request->author_last;
+            $author->birth_year = $request->author_year;
+            $author->bio_url = $request->author_bio;
+            $author->save();
+
+            // set the book's author to be this newly aded author
+            $book->author()->associate($author);
+
+        } else {
+
+            // otherwise, just set the book's author id to the author_id chosen from the dropdown menu
+            $book->author_id = $request->author_id;
+        }
+
         $book->save();
 
         // Flash message
