@@ -167,3 +167,7 @@
 
 
 @stop
+
+@section('body')
+    <script type="text/javascript" src="/js/addauthor.js"></script>
+@stop
