@@ -35,7 +35,10 @@ class BookController extends Controller {
      */
     public function getCreate() {
         $authors_for_dropdown = \App\Author::authorsForDropdown();
-        return view('books.create')->with('authors_for_dropdown', $authors_for_dropdown);
+        $tags_for_checkboxes = \App\Tag::getTagsForCheckboxes();
+        return view('books.create')
+            ->with('authors_for_dropdown', $authors_for_dropdown)
+            ->with('tags_for_checkboxes', $tags_for_checkboxes);
     }
 
     /**
@@ -89,6 +92,15 @@ class BookController extends Controller {
 
         $book->save();
 
+        // sync tags
+        if($request->tags) {
+            $tags = $request->tags;
+        }
+        else {
+            $tags = [];
+        }
+        $book->tags()->sync($tags);
+
         // Flash message
         \Session::flash('message','Your book was added');
 
@@ -99,13 +111,24 @@ class BookController extends Controller {
      * Responds to requests to GET /book/edit
      */
     public function getEdit($id) {
-        $book = \App\Book::find($id);
+        $book = \App\Book::with('tags')->find($id);
+
+        $tags_for_checkboxes = \App\Tag::getTagsForCheckboxes();
+
+        $tags_for_this_book = [];
+        foreach($book->tags as $tag) {
+            $tags_for_this_book[] = $tag->id;
+        }
 
         $authors_for_dropdown = \App\Author::authorsForDropdown();
 
         return view('books.edit')
-            ->with('book',$book)
-            ->with('authors_for_dropdown', $authors_for_dropdown);
+            ->with([
+                'book' => $book,
+                'authors_for_dropdown' => $authors_for_dropdown,
+                'tags_for_checkboxes' => $tags_for_checkboxes,
+                'tags_for_this_book' => $tags_for_this_book,
+            ]);
     }
 
     /**
@@ -161,6 +184,16 @@ class BookController extends Controller {
         $book->cover = $request->cover;
         $book->published = $request->published;
         $book->purchase_link = $request->purchase_link;
+        
+        // sync tags
+        if($request->tags) {
+            $tags = $request->tags;
+        }
+        else {
+            $tags = [];
+        }
+        $book->tags()->sync($tags);
+
         $book->save();
         \Session::flash('message','Your changes were saved.');
         return redirect('/book/edit/'.$request->id);

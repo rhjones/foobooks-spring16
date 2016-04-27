@@ -134,6 +134,18 @@
            <div class='error'>{{ $errors->first('purchase_link') }}</div>
         </div>
 
+        <div class='form-group'>
+          @foreach($tags_for_checkboxes as $tag_id => $tag_name)
+            <input
+                type='checkbox'
+                value='{{ $tag_id }}'
+                name='tags[]'
+                {{ (in_array($tag_id,$tags_for_this_book)) ? 'CHECKED' : '' }}
+            >
+            {{ $tag_name }} <br>
+          @endforeach
+        </div>
+
         <div class='form-instructions'>
             All fields are required
         </div>
