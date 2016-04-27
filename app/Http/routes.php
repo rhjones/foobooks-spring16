@@ -21,6 +21,29 @@ Route::get('/book/edit/{id?}', 'BookController@getEdit');
 Route::post('/book/edit', 'BookController@postEdit');
 Route::get('/book/show/{title?}', 'BookController@getShow');
 
+
+Route::get('/login', 'Auth\AuthController@getLogin');
+Route::post('/login', 'Auth\AuthController@postLogin');
+Route::get('/logout', 'Auth\AuthController@logout');
+Route::get('/register', 'Auth\AuthController@getRegister');
+Route::post('/register', 'Auth\AuthController@postRegister');
+
+Route::get('/show-login-status', function() {
+
+    # You may access the authenticated user via the Auth facade
+    $user = Auth::user();
+
+    if($user) {
+        echo 'You are logged in.';
+        dump($user->toArray());
+    } else {
+        echo 'You are not logged in.';
+    }
+
+    return;
+
+});
+
 # ------------------------------------
 # Practice routes
 # ------------------------------------
